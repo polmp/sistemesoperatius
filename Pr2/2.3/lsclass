@@ -1,0 +1,8 @@
+#!/bin/bash
+
+for i in $(find $1 -name "*.py" | sort -d ); do
+	for j in $(awk '/class/ {sub(/class/,""); sub(/\([a-z.]*\):/,""); sub(/\([A-Z.][a-z.]*\):/,"");print $1}' $i | sort -d);do
+		echo $j $i
+	done
+	
+done

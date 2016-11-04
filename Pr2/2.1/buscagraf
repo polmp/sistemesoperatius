@@ -1,0 +1,13 @@
+#!/bin/bash
+seleccioarxiu=$(zenity --file-selection --title="Selecciona arxiu")
+
+nomarxiu=$(zenity --entry --text="Escriu paraula a buscar:")
+
+if [[ $(cat $seleccioarxiu) == *"$nomarxiu"* ]];
+then
+	echo El nom de fitxer conte la paraula
+else
+	echo El nom de fitxer NO conte la paraula
+fi
+
+
