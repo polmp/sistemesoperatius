@@ -1,0 +1,162 @@
+#!/bin/bash
+bdname=".bd"
+
+while getopts "na:r:b:e:h" opt; do
+  case $opt in
+    n)
+	  if [ -d $(pwd)/$bdname ]; then
+	  	echo "La base de dades existeix, segur que vols continuar?"
+	  	echo "Es borrarà tota la informació"
+	  	read -p '[y/n] ' conf
+	  	if [ "$conf" == "y" ] && [ "$(find $(pwd)/$bdname/ -name "*.txt" -maxdepth 1)" != "" ]; then
+	  		rm -r $(pwd)/$bdname/*.txt
+	  		echo "Base de dades creada"
+	  	else
+	  		exit 1
+	  	fi
+	  
+	  else
+	  	mkdir $(pwd)/$bdname
+	  	echo "Base de dades creada"
+	  fi
+      ;;
+
+    a) 
+      if [ -f "$(pwd)/$bdname/$OPTARG.txt" ]; then
+      	echo "El projecte ja existeix!"
+      	exit 1
+      else
+      	echo "Projecte $OPTARG creat"
+      	touch "$(pwd)/$bdname/$OPTARG.txt"
+      fi
+	  ;;
+
+	r)
+       if [ ! -f "$(pwd)/$bdname/$OPTARG.txt" ]; then
+       		echo "El projecte $OPTARG no existeix!"
+       else
+       		rm -f "$(pwd)/$bdname/$OPTARG.txt"
+       		echo "Projecte $OPTARG borrat"
+       fi
+		
+		;;
+
+	b)
+		if [ -f "$(pwd)/$bdname/$OPTARG.txt" ]; then
+			if [ "$(cat "$(pwd)/$bdname/$OPTARG.txt")" == "" ] || [[ "$(cat "$(pwd)/$bdname/$OPTARG.txt" | tail -1)" == *"E"* ]]; then
+				echo "B" $(date +"%s") >> "$(pwd)/$bdname/$OPTARG.txt"
+				echo "B" $(date +"%s")
+			else
+				echo "S'està treballant en el projecte!"
+			fi
+		fi
+	;;
+
+	e)
+		if [ -f "$(pwd)/$bdname/$OPTARG.txt" ]; then
+			if [[ "$(cat "$(pwd)/$bdname/$OPTARG.txt" | tail -1)" == *"B"* ]]; then
+				echo "E" $(date +"%s") >> "$(pwd)/$bdname/$OPTARG.txt"
+				echo "E" $(date +"%s")
+			else
+				echo "No s'està treballant en el projecte!"
+			fi
+		fi
+
+	;;
+
+	h)
+		echo "*******************************"
+		echo "JA Help"
+		echo "*******************************"
+		echo
+		echo "ja -n"
+		echo "	Crea una nova base de dades. "
+		echo "	Demana confirmació de borrada si ja existeix."
+		echo
+		echo "ja -a <prjid>"
+		echo "	Crea un projecte amb nom <prjid>. El crea només si no existeix"
+		echo
+		echo "ja -b <prjid>"
+		echo "	Apunta al projecte <prjid> que comencem a treballar."
+		echo "	També comprova si no s'està treballant amb el projecte."
+		echo
+		echo "ja -e <prjid>"
+		echo "	Apunta al projecte <prjid> que acaba el lot de treball."
+		echo "	També comprova que s'estigui treballant amb el projecte."
+		echo
+		echo "ja <prjid>"
+		echo "	Mostra la següent informació per pantalla del projecte <prjid>:"
+		echo "		- Treball amb hores per lot de projecte"
+		echo "		- Nombre de lots treballats"
+		echo "		- Total d'hores treballades"
+		echo
+
+	
+	;;
+
+    :)
+      echo "La opcio -$OPTARG necessita un argument!"
+      exit 1
+      ;;
+  esac
+done
+
+if [ $OPTIND -eq 1 ] && [ "$1" != "" ]; then
+	a=0
+	nombrelot=1
+	totalhores=0
+	temp1=0
+	temp2=0
+	
+	if [ -f "$(pwd)/$bdname/$1.txt" ]; then
+		nombree=$(($(grep -c 'E' "$(pwd)/$bdname/$1.txt")*2))
+		if [ $nombree == "0" ]; then
+			echo "No s'ha consolidat ni una tasca de treball!"
+			exit 1
+		fi
+		echo "----------------------------------------------------"
+		echo Informació del projecte $1
+		echo "----------------------------------------------------"
+		echo
+		for work in $(cat "$(pwd)/$bdname/$1.txt"); do
+
+			if [ $temp1 != 0 ] && [ $temp2 != 0 ]; then
+				echo Lot de treball $nombrelot: $(bc <<< 'scale=3;'$(($temp2-$temp1))'/3600') hores
+				nombrelot=$(($nombrelot+1))
+				totalhores=$(($totalhores+($temp2-$temp1)))
+				a=$(($a+1))
+				temp1=0
+				temp2=0
+			elif [ $work == "E" ] || [ $work == "B" ]; then
+				a=$(($a+1))
+			elif [ $temp1 == 0 ]; then
+				temp1=$work
+			elif [ $temp2 == 0 ]; then
+				temp2=$work
+				if [ $a == $(($nombree)) ];then
+					echo Lot de treball $nombrelot: $(bc <<< 'scale=3;'$(($temp2-$temp1))'/3600') hores
+					nombrelot=$(($nombrelot+1))
+					totalhores=$(($totalhores+($temp2-$temp1)))
+					temp1=0
+					temp2=0
+				fi 
+
+			elif [ $a == $(($nombree)) ]; then
+				break
+				
+			fi
+
+		done
+		echo
+		echo "----------------------------------------------------"
+
+		echo "Nombre de lots treballats: $(($nombrelot-1))"
+		echo "Total treballat:" $(bc <<< 'scale=3;'$totalhores/3600) hores
+
+	
+	else
+		echo "El projecte $1 no existeix!"
+		exit 1
+
+	fi
+fi
