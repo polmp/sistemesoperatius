@@ -1,0 +1,9 @@
+#!/bin/sh
+chmod 700 $0
+var=$(ls $1 | wc -l)
+if [ "$var" = "0" ] 
+then
+	ls --sort=size | head -2
+else 
+	ls --sort=size $1 | head -2
+fi
