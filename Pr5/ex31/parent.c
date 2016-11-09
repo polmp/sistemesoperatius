@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 int main(void){
+  pid_t llistapid[4];
   pid_t proces;
   int i=0;
   while(i++<4){
@@ -13,8 +14,9 @@ int main(void){
       exit(-1);
     }
 
-    if(proces!=0){ //Soc el pare
+    else if(proces!=0){ //Soc el pare
       //printf("Soc el papi amb PID %d i el meu fill es %d\n",getpid(),proces);
+      llistapid[i] = proces; //Guardem el valor a la llista de PIDS
       wait(NULL);
     }
     else{ //Soc el FILL
@@ -22,5 +24,6 @@ int main(void){
       break;
     }
   }
+
   return 0;
 }
