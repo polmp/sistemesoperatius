@@ -22,8 +22,9 @@ int main(void){
     if(proces<0){ //Error
       fprintf(stderr,"Error en crear el fork\n");
       i--;
-      while((i--)>=0){
-        kill(llistapid[i],SIGTERM);
+      while(i>=0){
+      	kill(llistapid[i],SIGTERM);
+      	i--;
       }
       exit(-1);
     }
