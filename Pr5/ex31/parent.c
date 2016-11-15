@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <stdlib.h>
 
 int main(void){
@@ -15,7 +16,7 @@ int main(void){
     }
 
     else if(proces!=0){ //Soc el pare
-      //printf("Soc el papi amb PID %d i el meu fill es %d\n",getpid(),proces);
+      //printf("Soc el pare amb PID %d i el meu fill es %d\n",getpid(),proces);
       llistapid[i] = proces; //Guardem el valor a la llista de PIDS
       wait(NULL);
     }
