@@ -11,7 +11,6 @@ int main(void){
   pid_t proces;
   int i=0;
   while(i<4){
-    //printf("Comenso amb 0 ? %d\n", i);
     if(i!=3){
       proces=fork();
     }

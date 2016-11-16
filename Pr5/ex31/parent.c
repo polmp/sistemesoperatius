@@ -11,8 +11,7 @@ int main(void){
   int i=0;
   while(i++<4){
     if((proces=fork())<0){ //Error
-      perror("ERROR");
-      exit(-1);
+      exit(EXIT_FAILURE);
     }
 
     else if(proces!=0){ //Soc el pare

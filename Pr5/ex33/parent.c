@@ -25,7 +25,6 @@ char nombrechild[7];
   
   while(i++<4){
     if((proces=fork())<0){ //Error
-      perror("ERROR");
       exit(EXIT_FAILURE);
     }
 
