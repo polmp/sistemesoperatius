@@ -31,7 +31,7 @@ void prod_matrix(const matrix a, const matrix b, matrix r, int minf, int maxf, i
 	if((maxf-minf) == (maxc-minc)){
 		for(int i=minf-1;i<maxf;i++){
 			for(int j=minc-1;j<maxc;j++){
-				for(int index=0;index<DIM-1;index++){
+				for(int index=0;index<DIM;index++){
 					r[i][j]+=a[i][index]*b[index][j];
 				
 				}
