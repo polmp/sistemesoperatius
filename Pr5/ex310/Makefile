@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-std=c99 
+CFLAGS=-std=c99
 
 main: parent child
 test_matrix: test_matrix.o matrix.o

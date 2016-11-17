@@ -31,7 +31,7 @@ int main(int argc, char *argv[]){
 
 	if(argc==4){
 
-		fd=shm_open("fitxer",O_RDWR|O_CREAT,S_IRUSR|S_IWUSR);
+		fd=shm_open(FILESHM,O_RDWR|O_CREAT,S_IRUSR|S_IWUSR);
 		if(fd==-1) {
 			fprintf(stderr,"CAN'T CREATE SM");
 			exit(EXIT_FAILURE);
@@ -47,13 +47,26 @@ int main(int argc, char *argv[]){
 		matrix A = addr;
 		matrix B = addr + SIZE;
 		matrix R = addr + SIZE*2;
-		const_matrix(A,2);
-		const_matrix(B,2);
-		const_matrix(R,0);
+		
+		//Carreguem les dues matrius a A i B respectivament
+		if(!load_matrix(argv[1],A)){
+			shm_unlink(FILESHM);
+			exit(EXIT_FAILURE);
+		}
+
+		if(!load_matrix(argv[2],B)){
+			shm_unlink(FILESHM);
+			exit(EXIT_FAILURE);
+		}
+		
+		printf("MATRIX A:\n");
+		print_matrix(A);
+		printf("MATRIX B:\n");
+		print_matrix(B);
 
 		while(i++<4){
 			if((proces=fork())<0){
-				shm_unlink("fitxer");
+				shm_unlink(FILESHM);
 				exit(EXIT_FAILURE);
 	    		}
 
@@ -61,8 +74,8 @@ int main(int argc, char *argv[]){
 				llistapid[i] = proces; 
 				wait(&childstate);
 				if(!WIFEXITED(childstate)){ //Si entrem aqui, el programa no ha acabat correctament
-					fprintf(stderr,"Proces amb PID %d ha fallat",proces);
-					shm_unlink("fitxer");
+					fprintf(stderr,"PROCESS WITH PID %d FAILED",proces);
+					shm_unlink(FILESHM);
 					exit(EXIT_FAILURE);
 				}
 			
@@ -74,16 +87,24 @@ int main(int argc, char *argv[]){
 				//printf("Soc el proces numero %d amb PID %d\n",i,getpid());
 				sprintf(&nombre,"%d",i);
 				convertchild(nombrechild,nombre);
-				execlp("./child",nombrechild,"fitxer",&nombre,NULL);
+				execlp("./child",nombrechild,FILESHM,&nombre,NULL);
 	      			break;
 	    		}
 	  	}
 	
-		print_matrix(R); //Mostrem la matriu quan acaben tots els processos
+		if(save_matrix(argv[3],R)){
+			printf("MATRIX SAVED TO %s\n",argv[3]);
+		}
+		else{
+			printf("CAN'T SAVE MATRIX TO %s\n",argv[3]);
+		}
+		
 		}
 
 	else{
 		printf("USAGE:\n./parent matA.dat matB.dat matR.dat\n");
 	}
+	
+	shm_unlink(FILESHM); //Acabem la memòria compartida
 	return 0;
 }

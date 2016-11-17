@@ -13,10 +13,11 @@ int returncolumns(char line[]){
 	return count+1;
 }
 
-void save_matrix(const char filename[],const matrix m){
+int save_matrix(const char filename[],const matrix m){
 	FILE *f=fopen(filename,"w");
 	if(f==NULL){
 		fprintf(stderr,"Error opening the file");
+		return 0;
 		exit(EXIT_FAILURE);
 	}
 
@@ -32,18 +33,19 @@ void save_matrix(const char filename[],const matrix m){
 		}
 		fprintf(f,"\n");
 	}
-	fclose(f);	
+	fclose(f);
+	return 1;	
 }
 
-void load_matrix(const char filename[],matrix m){
+int load_matrix(const char filename[],matrix m){
 	char linia[256];
 	int i=0;
 	int j=0;
 	FILE *f=fopen(filename,"r");
 	while (fgets(linia, sizeof(linia), f)) {
 		if(returncolumns(linia) != DIM){
-			fprintf(stderr,"MATRIX IS NOT THE SAME SIZE. SETTING ALL THE MATRIX TO 0...\n");
-			const_matrix(m,0);
+			fprintf(stderr,"MATRIX IS NOT THE SAME SIZE, ABORTING...\n");
+			return 0;
 			break;
 		}
 		char *token = strtok(linia, ",");
@@ -56,6 +58,7 @@ void load_matrix(const char filename[],matrix m){
 	}
 
 	fclose(f);
+	return 1;
 
 }
 
@@ -70,7 +73,7 @@ for(int j=0;j<DIM;j++){
 }
 
 void print_matrix(const matrix a){
-	fprintf(stdout,"Matriu de %d x %d\n",DIM,DIM);
+	fprintf(stdout,"Matrix %d x %d\n",DIM,DIM);
 	for(int i=0;i<DIM;i++){
 		for(int j=0;j<DIM;j++){
 			if(j!=DIM-1){
