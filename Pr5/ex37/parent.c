@@ -45,7 +45,6 @@ int main(void){
 
 
 	while(i++<4){
-		printf("ENTRO");
 		if((proces=fork())<0){
 			shm_unlink("fitxer");
 			exit(EXIT_FAILURE);
