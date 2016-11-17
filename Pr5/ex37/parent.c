@@ -3,9 +3,11 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <stdlib.h>
+#include "matrix.h"
 
 void convertchild(char * nombrechild, char nombre){
 nombrechild[0] = 'c';
@@ -29,9 +31,9 @@ int main(void){
 	void *addr;
 
 	fd=shm_open("fitxer",O_CREAT,S_IRUSR|S_IWUSR);
-	if(fd==-1) exit(STATUS_FAILURE); //Si no podem crear regio de memoria compartida, sortim
+	if(fd==-1) exit(EXIT_FAILURE); //Si no podem crear regio de memoria compartida, sortim
 	if(ftruncate(fd,3*SIZE) == -1) exit(EXIT_FAILURE);
-	adrr=mmap(NULL,3*SIZE,PROT_READ|PROT_WRITE,MAP_SHARED,fd,0); //Mapejem a memòria
+	addr=mmap(NULL,3*SIZE,PROT_READ|PROT_WRITE,MAP_SHARED,fd,0); //Mapejem a memòria
 	if(addr==MAP_FAILED) exit(EXIT_FAILURE);
 
 
