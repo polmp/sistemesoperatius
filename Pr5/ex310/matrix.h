@@ -23,4 +23,8 @@ void const_matrix(matrix m, float v);
 
 void save_matrix(const char filename[],const matrix m);
 void load_matrix(const char filename[],matrix m);
+
+//returnscolumns("5.00,5.00,5.00")
+//3
+int returncolumns(char line[]);
 #endif

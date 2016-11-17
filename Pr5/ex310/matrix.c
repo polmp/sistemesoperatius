@@ -4,6 +4,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+int returncolumns(char line[]){
+	int i=-1;
+	int count=0;
+	while(line[++i]){
+   		if(line[i] == ',') count++;
+	}  
+	return count+1;
+}
+
 void save_matrix(const char filename[],const matrix m){
 	FILE *f=fopen(filename,"w");
 	if(f==NULL){
@@ -32,6 +41,11 @@ void load_matrix(const char filename[],matrix m){
 	int j=0;
 	FILE *f=fopen(filename,"r");
 	while (fgets(linia, sizeof(linia), f)) {
+		if(returncolumns(linia) != DIM){
+			fprintf(stderr,"MATRIX IS NOT THE SAME SIZE. SETTING ALL THE MATRIX TO 0...\n");
+			const_matrix(m,0);
+			break;
+		}
 		char *token = strtok(linia, ",");
     		while(token) {
        			m[i][j++]=atof(token);

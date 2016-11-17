@@ -1,4 +1,5 @@
 #include "matrix.h"
+#include <stdio.h>
 
 int main(void){
 	float m1[DIM][DIM];
