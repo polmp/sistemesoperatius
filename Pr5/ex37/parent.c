@@ -30,14 +30,22 @@ int main(void){
 	int fd;
 	void *addr;
 
-	fd=shm_open("fitxer",O_CREAT,S_IRUSR|S_IWUSR);
-	if(fd==-1) exit(EXIT_FAILURE); //Si no podem crear regio de memoria compartida, sortim
-	if(ftruncate(fd,3*SIZE) == -1) exit(EXIT_FAILURE);
+	fd=shm_open("fitxer",O_RDWR|O_CREAT,S_IRUSR|S_IWUSR);
+	if(fd==-1) {
+		fprintf(stderr,"CAN'T CREATE SM");
+		exit(EXIT_FAILURE);
+	}; //Si no podem crear regio de memoria compartida, sortim
+	if(ftruncate(fd,3*SIZE) == -1) {
+		fprintf(stderr,"CAN'T TRUNCATE");
+		exit(EXIT_FAILURE);
+	}
 	addr=mmap(NULL,3*SIZE,PROT_READ|PROT_WRITE,MAP_SHARED,fd,0); //Mapejem a memòria
 	if(addr==MAP_FAILED) exit(EXIT_FAILURE);
+	close(fd);
 
 
 	while(i++<4){
+		printf("ENTRO");
 		if((proces=fork())<0){
 			shm_unlink("fitxer");
 			exit(EXIT_FAILURE);
@@ -63,7 +71,6 @@ int main(void){
       			break;
     		}
   	}
-
-  shm_unlink("fitxer");
+  
   return 0;
 }
