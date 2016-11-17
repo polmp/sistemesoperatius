@@ -63,7 +63,7 @@ int main(void){
 			#endif
     		}
    		else{
-			printf("Soc el proces numero %d amb PID %d\n",i,getpid());
+			//printf("Soc el proces numero %d amb PID %d\n",i,getpid());
 			sprintf(&nombre,"%d",i);
 			convertchild(nombrechild,nombre);
 			execlp("./child",nombrechild,"fitxer",&nombre,NULL);
