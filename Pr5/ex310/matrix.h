@@ -22,4 +22,5 @@ void prod_matrix(const matrix a, const matrix b, matrix r, int minf, int maxf, i
 void const_matrix(matrix m, float v);
 
 void save_matrix(const char filename[],const matrix m);
+void load_matrix(const char filename[],matrix m);
 #endif

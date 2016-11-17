@@ -1,4 +1,5 @@
 #include "matrix.h"
+#include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -22,10 +23,30 @@ void save_matrix(const char filename[],const matrix m){
 		}
 		fprintf(f,"\n");
 	}
-	
-
-	
+	fclose(f);	
 }
+
+void load_matrix(const char filename[],matrix m){
+	char linia[256];
+	int i=0;
+	int j=0;
+	FILE *f=fopen(filename,"r");
+	while (fgets(linia, sizeof(linia), f)) {
+		char *token = strtok(linia, ",");
+    		while(token) {
+       			m[i][j++]=atof(token);
+        		token = strtok(NULL, ",");
+    		}
+		i++;
+		j=0;
+	}
+
+	fclose(f);
+
+}
+
+
+
 void const_matrix(matrix m, float v){
 for(int j=0;j<DIM;j++){
 	for(int i=0;i<DIM;i++){
