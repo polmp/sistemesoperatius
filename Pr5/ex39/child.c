@@ -4,11 +4,13 @@
 #include <sys/stat.h>
 #include <sys/mman.h>  
 #include <fcntl.h>
+#include <string.h>
 #include "matrix.h"
 
 
 int main(int argc, char *argv[]){
 	if(argc == 3){
+		/* PART D'ACCÈS A LA MEMÒRIA COMPARTIDA */
 		struct stat sb;
 		int fd;
 		void *addr;
@@ -32,6 +34,26 @@ int main(int argc, char *argv[]){
 		matrix A = addr;
 		matrix B = addr + SIZE;
 		matrix R = addr + 2*SIZE;
+
+		/* ----------------------------------------------- */
+
+		if(!strcmp(argv[0],"child1")){
+			prod_matrix(A,B,R,1,DIM/2,1,DIM/2);
+		}
+		
+		else if(!strcmp(argv[0],"child2")){
+			prod_matrix(A,B,R,1,DIM/2,DIM/2+1,DIM);
+		}
+		
+		else if(!strcmp(argv[0],"child3")){
+			prod_matrix(A,B,R,DIM/2+1,DIM,1,DIM/2);
+		}
+
+		else if(!strcmp(argv[0],"child4")){
+			prod_matrix(A,B,R,DIM/2+1,DIM,DIM/2+1,DIM);
+		}
+		
+
 		
 		//printf("%s",argv[1]);
 		/*
