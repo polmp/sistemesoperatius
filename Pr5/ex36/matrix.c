@@ -27,13 +27,23 @@ void print_matrix(const matrix a){
 
 }
 
+void prod_matrix(const matrix a, const matrix b, matrix r, int minf, int maxf, int minc, int maxc){
+for(int i=minf-1;i<maxf;i++){
+	for(int j=minc-1;j<maxc;j++){
+		r[i][j]=a[i][j]*b[i][j]
+		
+	}
+}
+}
+
 
 int main(void){
 float m1[DIM][DIM];
 float m2[DIM][DIM];
-float m3[DIM][DIM];
+float mr[DIM][DIM];
 const_matrix(m1,5);
 const_matrix(m2,3);
+const_matrix(mr,0);
 print_matrix(m2);
 return 0;
 }

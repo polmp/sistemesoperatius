@@ -2,7 +2,7 @@
 #define MATRIX_H
 
 /* dimensio de la matriu */
-#define DIM 8
+#define DIM 3
 
 /* espai que ocupa una matriu */
 #define SIZE (DIM*DIM*sizeof(float))
