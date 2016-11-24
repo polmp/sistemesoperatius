@@ -17,7 +17,6 @@ int save_matrix(const char filename[],const matrix m){
 	FILE *f=fopen(filename,"w");
 	if(f==NULL){
 		fprintf(stderr,"Error opening the file");
-		return 0;
 		exit(EXIT_FAILURE);
 	}
 
@@ -38,25 +37,16 @@ int save_matrix(const char filename[],const matrix m){
 }
 
 int load_matrix(const char filename[],matrix m){
-	char linia[256];
-	int i=0;
-	int j=0;
 	FILE *f=fopen(filename,"r");
-	while (fgets(linia, sizeof(linia), f)) {
-		if(returncolumns(linia) != DIM){
-			fprintf(stderr,"MATRIX IS NOT THE SAME SIZE, ABORTING...\n");
-			return 0;
-			break;
-		}
-		char *token = strtok(linia, ",");
-    		while(token) {
-       			m[i][j++]=atof(token);
-        		token = strtok(NULL, ",");
-    		}
-		i++;
-		j=0;
+	if(f==NULL){
+		fprintf(stderr,"Error opening the file");
+		exit(EXIT_FAILURE);
 	}
-
+	for(int j=0;j<DIM;j++){
+		for(int i=0;i<DIM;i++){
+			fscanf(f,"%f,",&m[j][i]);
+		}
+	}
 	fclose(f);
 	return 1;
 

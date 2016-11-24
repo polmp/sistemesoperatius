@@ -59,10 +59,13 @@ int main(int argc, char *argv[]){
 			exit(EXIT_FAILURE);
 		}
 		
-		printf("MATRIX A:\n");
+		const_matrix(R,0); //Fiquem a la zona de memòria la matriu inicialitzada a 0
+		/*printf("MATRIX A:\n");
 		print_matrix(A);
 		printf("MATRIX B:\n");
 		print_matrix(B);
+		*/
+		
 
 		while(i++<4){
 			if((proces=fork())<0){
@@ -93,6 +96,7 @@ int main(int argc, char *argv[]){
 	  	}
 	
 		if(save_matrix(argv[3],R)){
+			print_matrix(R);
 			printf("MATRIX SAVED TO %s\n",argv[3]);
 		}
 		else{
