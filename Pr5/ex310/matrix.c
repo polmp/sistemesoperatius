@@ -4,15 +4,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int returncolumns(char line[]){
-	int i=-1;
-	int count=0;
-	while(line[++i]){
-   		if(line[i] == ',') count++;
-	}  
-	return count+1;
-}
-
 int save_matrix(const char filename[],const matrix m){
 	FILE *f=fopen(filename,"w");
 	if(f==NULL){
@@ -20,17 +11,20 @@ int save_matrix(const char filename[],const matrix m){
 		exit(EXIT_FAILURE);
 	}
 
-	for(int i=0;i<DIM;i++){
-		for(int j=0;j<DIM;j++){
-			if(j==(DIM-1)){
-				fprintf(f,"%f",m[i][j]);
-			}
-			else{
-				fprintf(f,"%f,",m[i][j]);
-			}
+	else{
+
+		for(int i=0;i<DIM;i++){
+			for(int j=0;j<DIM;j++){
+				if(j==(DIM-1)){
+					fprintf(f,"%f",m[i][j]);
+				}
+				else{
+					fprintf(f,"%f,",m[i][j]);
+				}
 			
+			}
+			fprintf(f,"\n");
 		}
-		fprintf(f,"\n");
 	}
 	fclose(f);
 	return 1;	
@@ -42,10 +36,13 @@ int load_matrix(const char filename[],matrix m){
 		fprintf(stderr,"Error opening the file");
 		exit(EXIT_FAILURE);
 	}
+
+	else{
 	for(int j=0;j<DIM;j++){
 		for(int i=0;i<DIM;i++){
 			fscanf(f,"%f,",&m[j][i]);
 		}
+	}
 	}
 	fclose(f);
 	return 1;

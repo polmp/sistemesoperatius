@@ -2,7 +2,7 @@
 #define MATRIX_H
 
 /* dimensio de la matriu */
-#define DIM 50
+#define DIM 650
 
 /* espai que ocupa una matriu */
 #define SIZE (DIM*DIM*sizeof(float))
@@ -26,7 +26,4 @@ void const_matrix(matrix m, float v);
 int save_matrix(const char filename[],const matrix m);
 int load_matrix(const char filename[],matrix m);
 
-//returnscolumns("5.00,5.00,5.00")
-//3
-int returncolumns(char line[]);
 #endif

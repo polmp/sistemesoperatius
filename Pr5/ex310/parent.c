@@ -49,17 +49,12 @@ int main(int argc, char *argv[]){
 		matrix R = addr + SIZE*2;
 		
 		//Carreguem les dues matrius a A i B respectivament
-		if(!load_matrix(argv[1],A)){
-			shm_unlink(FILESHM);
-			exit(EXIT_FAILURE);
-		}
-
-		if(!load_matrix(argv[2],B)){
-			shm_unlink(FILESHM);
-			exit(EXIT_FAILURE);
-		}
+		load_matrix(argv[1],A);
+		//print_matrix(A);
+		load_matrix(argv[2],B);
+			
 		
-		const_matrix(R,0); //Fiquem a la zona de memòria la matriu inicialitzada a 0
+		//const_matrix(R,0); //Fiquem a la zona de memòria la matriu inicialitzada a 0
 		/*printf("MATRIX A:\n");
 		print_matrix(A);
 		printf("MATRIX B:\n");
@@ -95,13 +90,9 @@ int main(int argc, char *argv[]){
 	    		}
 	  	}
 	
-		if(save_matrix(argv[3],R)){
-			print_matrix(R);
-			printf("MATRIX SAVED TO %s\n",argv[3]);
-		}
-		else{
-			printf("CAN'T SAVE MATRIX TO %s\n",argv[3]);
-		}
+		save_matrix(argv[3],R);
+		printf("MATRIX SAVED TO %s\n",argv[3]);
+
 		
 		}
 
