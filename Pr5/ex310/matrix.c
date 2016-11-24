@@ -40,7 +40,10 @@ int load_matrix(const char filename[],matrix m){
 	else{
 	for(int j=0;j<DIM;j++){
 		for(int i=0;i<DIM;i++){
-			fscanf(f,"%f,",&m[j][i]);
+			if(i!=DIM-1)
+				fscanf(f,"%f,",&m[j][i]);
+			else
+				fscanf(f,"%f",&m[j][i]);
 		}
 	}
 	}

@@ -6,8 +6,9 @@ int main(void){
 	float m2[DIM][DIM];
 	float mr[DIM][DIM];
 	//const_matrix(mr,0);
-	load_matrix("mat650.dat",m1);
-	load_matrix("mat650.dat",m2);
+	load_matrix("mat88.dat",m1);
+	load_matrix("mat882.dat",m2);
+	print_matrix(m2);
 	//print_matrix(m1);
 	//print_matrix(m1);
 	//load_matrix("mat20002.dat",m2);

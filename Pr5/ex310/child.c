@@ -53,9 +53,9 @@ int main(int argc, char *argv[]){
 		else if(!strcmp(argv[0],"child4")){
 			prod_matrix(A,B,R,DIM/2+1,DIM,DIM/2+1,DIM);
 		}
-		printf("Primer element de la matriu A %s -> %f\n",argv[0],A[0][0]);
-		printf("Primer element de la matriu B %s -> %f\n",argv[0],B[0][0]);
-		printf("Primer element de la matriu B %s -> %f\n",argv[0],R[0][0]);
+		//printf("Primer element de la matriu A %s -> %f\n",argv[0],A[0][0]);
+		//printf("Primer element de la matriu B %s -> %f\n",argv[0],B[0][0]);
+		//printf("Primer element de la matriu R %s -> %f\n",argv[0],R[0][0]);
 		close(fd);
 		exit(EXIT_SUCCESS);
 

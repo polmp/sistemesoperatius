@@ -52,6 +52,7 @@ int main(int argc, char *argv[]){
 		load_matrix(argv[1],A);
 		//print_matrix(A);
 		load_matrix(argv[2],B);
+		printf("ARG 1: %s ARG2: %s\n",argv[1],argv[2]);
 			
 		
 		//const_matrix(R,0); //Fiquem a la zona de memòria la matriu inicialitzada a 0
