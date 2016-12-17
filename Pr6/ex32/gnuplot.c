@@ -21,7 +21,6 @@ int main(void){
 
 		while(1){
 			sleep(4);
-			printf("Actualitzant...");
 			fprintf(pipegnu,"%s\n","replot");
 			fflush(pipegnu);
 
