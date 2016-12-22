@@ -130,7 +130,6 @@ int bind_shared_table(void){
 
 int create_shared_table(void){
 	fd=shm_open("memcompartida",O_RDWR|O_CREAT,S_IRUSR|S_IWUSR);
-
 	if(fd==-1) {
 		fprintf(stderr,"CAN'T CREATE SM");
 		return ERR;
