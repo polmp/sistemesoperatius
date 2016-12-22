@@ -1,4 +1,5 @@
 #define _POSIX_C_SOURCE 200809L
+#include "shrtbl.h"
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -7,18 +8,31 @@
 #include <sys/wait.h>
 #include <stdlib.h>
 #include <string.h>
-#include "shrtbl.h"
+#include <semaphore.h>
+#include <fcntl.h>  /*Constants*/         
+#include <sys/stat.h>
+
+#define SEM addr->semafor
 
 static apuntador_llista addr;
 static int fd;
 
 void init_table(void){
-printf("HOLA");
+	SEM = sem_open("semafor", O_CREAT, S_IRUSR|S_IWUSR, 0);
+	sem_wait(SEM);
+	//Zona comflictiva
+	for(int i=0;i<NPARTITS;i++){
+		addr->partits[i].enTaula = false;
+		addr->partits[i].numvots = 0;
+	}
+	sem_post(SEM);
 }
 
 int add_party(const char id[]){
+	
+	sem_wait(SEM);	
 	for(int i=0;i<NPARTITS;i++){
-		if(!strcmp(&addr->partits[i].id,id)){
+		if(!strcmp(addr->partits[i].id,id)){
 			if(addr->partits[i].enTaula){
 				return ERR;
 			}
@@ -32,47 +46,45 @@ int add_party(const char id[]){
 	for(int i=0;i<NPARTITS;i++){
 		if(!addr->partits[i].enTaula){
 				addr->partits[i].enTaula = true;
-				addr->partits[i].id = id;
+				*(addr->partits[i].id)=id;
 				return OK;
 		}
 
 	}
+	sem_post(SEM);
+	
+	
 }
 
 void del_party(const char id[]){
+	sem_wait(SEM);
 	for(int i=0;i<NPARTITS;i++){
-		if(!strcmp(&addr->partits[i].id,id)){
+		if(!strcmp(addr->partits[i].id,id)){
 			addr->partits[i].enTaula = false;
 			break;
 		}
 	}
+	sem_post(SEM);
 
 }
 
 void inc_votes(const char id[], int votes){
-	bool trobat = false;
+	sem_wait(SEM);
 	for(int i=0;i<NPARTITS;i++){
-		if((!strcmp(&addr->partits[i].id,id)) && addr->partits[i].enTaula){
+		if((!strcmp(addr->partits[i].id,id)) && addr->partits[i].enTaula){
 			addr->partits[i].numvots+=votes;
-			trobat = true;
 			break;
 		}
 	}
-
-	if(trobat){
-		return OK;
-	}
-	else{
-		return ERR;
-	}
-
+	sem_post(SEM);
 }
 
 int get_votes(const char id[]){
+	sem_wait(SEM);
 	bool trobat = false;
 	int valor;
 	for(int i=0;i<NPARTITS;i++){
-		if((!strcmp(&addr->partits[i].id,id)) && addr->partits[i].enTaula){
+		if((!strcmp(addr->partits[i].id,id)) && addr->partits[i].enTaula){
 			trobat = true;
 			valor = addr->partits[i].numvots;
 			break;
@@ -85,23 +97,28 @@ int get_votes(const char id[]){
 	else{
 		return ERR;
 	}
+	sem_post(SEM);
 }
 
 
 int get_nparties(void){
+	sem_wait(SEM);
 	int nombpartits=0;
 	for(int i=0;i<NPARTITS;i++){
 		if(addr->partits[i].enTaula){
 			nombpartits++;
 		}
 	}
+	sem_post(SEM);
 	return nombpartits;
 }
 
 void traverse(travapp *const f, void *const data){
-	for(int i=0,i<NPARTITS;i++){
+	sem_wait(SEM);
+	for(int i=0;i<NPARTITS;i++){
 		f(addr->partits[i].id,addr->partits[i].numvots,data);
 	}
+	sem_post(SEM);
 }
 
 
@@ -138,12 +155,3 @@ int remove_shared_table(void){
 	}
 }
 
-
-
-int main(void){
-
-	
-	//Llista LlistaPartits;
-	
-	return 0;
-}
