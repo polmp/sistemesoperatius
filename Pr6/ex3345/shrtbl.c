@@ -62,7 +62,7 @@ int add_party(const char id[]){
 	for(int i=0;i<NPARTITS;i++){
 		if(!addr->partits[i].enTaula){
 				addr->partits[i].enTaula = true;
-				*(addr->partits[i].id)=id[0];
+				*(addr->partits[i].id)=id;
 				break;
 		}
 
@@ -138,7 +138,8 @@ int get_nparties(void){
 void traverse(travapp *const f, void *const data){
 	sem_wait(&SEMAFOR);
 	for(int i=0;i<NPARTITS;i++){
-		f(addr->partits[i].id,addr->partits[i].numvots,data);
+		if(addr->partits[i].enTaula)
+			f(addr->partits[i].id,addr->partits[i].numvots,data);
 	}
 	sem_post(&SEMAFOR);
 }

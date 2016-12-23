@@ -16,12 +16,26 @@ void controlc(int sig){
 }
 
 void grafic_init(void){
-fprintf(pipegnu,"%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n","clear","reset","unset key","set xtics rotate out","set style data histogram","set style fill solid border","set boxwidth 0.95 relative","set style histogram rowstacked","set offsets graph -0.1,-0.5,0,0","set xlabel \"partits\"","set ylabel \"Vots (percentatge)\"","plot '-' using 2:xticlabel(1) lt rgb \"#66FF66\"");
-fflush(pipegnu);
+	
+	fprintf(pipegnu,"clear\n");
+	fprintf(pipegnu,"reset\n");
+	fprintf(pipegnu,"unset key\n");
+	fflush(pipegnu);
+	fprintf(pipegnu,"set xtics rotate out\n");
+	fprintf(pipegnu,"set style data histogram\n");
+	fprintf(pipegnu,"set style fill solid border\n");
+	fprintf(pipegnu,"set boxwidth 0.95 relative\n");
+	fprintf(pipegnu,"set style histogram rowstacked\n");
+	fprintf(pipegnu,"set offsets graph -0.1,-0.5, 0, 0\n");
+	fprintf(pipegnu,"set yrange [0:100]\n");
+	fprintf(pipegnu,"set xlabel \"Agrupacions\"");
+	fprintf(pipegnu,"set ylabel \"Vots (percentatge)\"");
+	fflush(pipegnu);
 }
 
-void printagrafic(const char *const id, int votes, void *const data){
-	fprintf(pipegnu,"%s %d\n",id,votes);
+void dadesgrafic(const char *const id, int votes, void *const data){
+	printf("ENTROO\n");
+	fprintf(pipegnu,"\"%s\" %d\n",id,votes);
 	fflush(pipegnu);
 }
 
@@ -52,7 +66,8 @@ int main(void){
 	init_table();
 	while(get_nparties() == 0) sleep(4);
 	grafic_init();
-	traverse(printagrafic,NULL);
+	fprintf(pipegnu,"plot '-' using 2:xticlabel(1) lt rgb \"#66FF66\"\n");
+	traverse(dadesgrafic,NULL);
   	fprintf(pipegnu,"e\n");
   	fflush(pipegnu);
 	
@@ -61,6 +76,8 @@ int main(void){
 		fprintf(pipegnu,"%s\n","replot");
 		fflush(pipegnu);
 	}
+	printf("Borrada memoria compartida\n");
+	remove_shared_table();
 	
 	pclose(pipegnu);
 

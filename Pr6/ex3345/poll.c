@@ -8,7 +8,7 @@
 int main(int argc,char *argv[]){
 	if(bind_shared_table() != ERR){
 		if(!strcmp("new",argv[1])){
-			if(!add_party(argv[2]))
+			if(add_party(argv[2]) == ERR)
 				printf("Ja existeix!\n");
 				
 		}
