@@ -37,7 +37,12 @@ void dadesgrafic(const char *const id, int votes, void *const data){
 	fflush(pipegnu);
 }
 
-
+void update(void){
+if (get_nparties() > 0)
+	traverse(dadesgrafic,NULL);
+fprintf(pipegnu,"e\n");
+fflush(pipegnu);
+}
 
 int main(void){
 	pid_t proces;
@@ -72,6 +77,7 @@ int main(void){
 	
 	while(!is_end){
 		sleep(4);
+		update();
 		fprintf(pipegnu,"%s\n","replot");
 		fflush(pipegnu);
 	}

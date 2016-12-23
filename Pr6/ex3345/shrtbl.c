@@ -62,7 +62,7 @@ int add_party(const char id[]){
 	for(int i=0;i<NPARTITS;i++){
 		if(!addr->partits[i].enTaula){
 				addr->partits[i].enTaula = true;
-				*(addr->partits[i].id)=id;
+				*(addr->partits[i].id)=&(id[0]);
 				break;
 		}
 
