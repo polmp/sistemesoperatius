@@ -35,6 +35,7 @@ int main(void){
 		printf("BIND OK\n");
 	}
 	init_table();
+	while(!get_nparties());
 	grafic_init(pipegnu);
 	while(1){
 		sleep(4);

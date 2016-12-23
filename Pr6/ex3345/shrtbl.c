@@ -18,20 +18,22 @@ static apuntador_llista addr;
 static int fd;
 
 void init_table(void){
-	SEMAFOR = sem_open("semafor", O_CREAT, S_IRUSR|S_IWUSR, 0);
-	sem_wait(SEMAFOR);
+	fprintf(stderr,"AQUI");
+	sem_init(&SEMAFOR,1,1);
+	sem_wait(&SEMAFOR);
+	fprintf(stderr,"ACAO");
 	//Zona conflictiva
 	for(int i=0;i<NPARTITS;i++){
 		addr->partits[i].enTaula = false;
 		addr->partits[i].numvots = 0;
 	}
-	sem_post(SEMAFOR);
+	
+	//sem_post(SEMAFOR);
 	
 }
 
 int add_party(const char id[]){
-	
-	sem_wait(SEMAFOR);	
+	sem_wait(&SEMAFOR);	
 	for(int i=0;i<NPARTITS;i++){
 		if(!strcmp(addr->partits[i].id,id)){
 			if(addr->partits[i].enTaula){
@@ -52,36 +54,36 @@ int add_party(const char id[]){
 		}
 
 	}
-	sem_post(SEMAFOR);
+	sem_post(&SEMAFOR);
 	
 	
 }
 
 void del_party(const char id[]){
-	sem_wait(SEMAFOR);
+	sem_wait(&SEMAFOR);
 	for(int i=0;i<NPARTITS;i++){
 		if(!strcmp(addr->partits[i].id,id)){
 			addr->partits[i].enTaula = false;
 			break;
 		}
 	}
-	sem_post(SEMAFOR);
+	sem_post(&SEMAFOR);
 
 }
 
 void inc_votes(const char id[], int votes){
-	sem_wait(SEMAFOR);
+	sem_wait(&SEMAFOR);
 	for(int i=0;i<NPARTITS;i++){
 		if((!strcmp(addr->partits[i].id,id)) && addr->partits[i].enTaula){
 			addr->partits[i].numvots+=votes;
 			break;
 		}
 	}
-	sem_post(SEMAFOR);
+	sem_post(&SEMAFOR);
 }
 
 int get_votes(const char id[]){
-	sem_wait(SEMAFOR);
+	sem_wait(&SEMAFOR);
 	bool trobat = false;
 	int valor;
 	for(int i=0;i<NPARTITS;i++){
@@ -98,28 +100,28 @@ int get_votes(const char id[]){
 	else{
 		return ERR;
 	}
-	sem_post(SEMAFOR);
+	sem_post(&SEMAFOR);
 }
 
 
 int get_nparties(void){
-	sem_wait(SEMAFOR);
+	sem_wait(&SEMAFOR);
 	int nombpartits=0;
 	for(int i=0;i<NPARTITS;i++){
 		if(addr->partits[i].enTaula){
 			nombpartits++;
 		}
 	}
-	sem_post(SEMAFOR);
+	sem_post(&SEMAFOR);
 	return nombpartits;
 }
 
 void traverse(travapp *const f, void *const data){
-	sem_wait(SEMAFOR);
+	sem_wait(&SEMAFOR);
 	for(int i=0;i<NPARTITS;i++){
 		f(addr->partits[i].id,addr->partits[i].numvots,data);
 	}
-	sem_post(SEMAFOR);
+	sem_post(&SEMAFOR);
 }
 
 

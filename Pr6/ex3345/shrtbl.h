@@ -15,7 +15,7 @@ bool enTaula;
 
 typedef struct {
 partit_individual partits[NPARTITS];
-sem_t *semafor;
+sem_t semafor;
 } taula_partits,*apuntador_llista;
 
 //typedef (taula_partits*)apuntador_llista;
