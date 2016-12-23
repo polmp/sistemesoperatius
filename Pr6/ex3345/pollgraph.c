@@ -28,13 +28,11 @@ void grafic_init(void){
 	fprintf(pipegnu,"set style histogram rowstacked\n");
 	fprintf(pipegnu,"set offsets graph -0.1,-0.5, 0, 0\n");
 	fprintf(pipegnu,"set yrange [0:100]\n");
-	fprintf(pipegnu,"set xlabel \"Agrupacions\"");
-	fprintf(pipegnu,"set ylabel \"Vots (percentatge)\"");
-	fflush(pipegnu);
+	fprintf(pipegnu,"set xlabel \"Agrupacions\"\n");
+	fprintf(pipegnu,"set ylabel \"Vots (percentatge)\"\n");
 }
 
 void dadesgrafic(const char *const id, int votes, void *const data){
-	printf("ENTROO\n");
 	fprintf(pipegnu,"\"%s\" %d\n",id,votes);
 	fflush(pipegnu);
 }
@@ -64,12 +62,13 @@ int main(void){
 	
 	signal(SIGINT, controlc); 
 	init_table();
-	while(get_nparties() == 0) sleep(4);
+	while(!get_nparties()) sleep(4);
 	grafic_init();
 	fprintf(pipegnu,"plot '-' using 2:xticlabel(1) lt rgb \"#66FF66\"\n");
+	fflush(pipegnu);
 	traverse(dadesgrafic,NULL);
   	fprintf(pipegnu,"e\n");
-  	fflush(pipegnu);
+  	
 	
 	while(!is_end){
 		sleep(4);
