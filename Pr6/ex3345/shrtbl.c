@@ -18,43 +18,62 @@ static apuntador_llista addr;
 static int fd;
 
 void init_table(void){
-	fprintf(stderr,"AQUI");
 	sem_init(&SEMAFOR,1,1);
 	sem_wait(&SEMAFOR);
-	fprintf(stderr,"ACAO");
 	//Zona conflictiva
 	for(int i=0;i<NPARTITS;i++){
 		addr->partits[i].enTaula = false;
 		addr->partits[i].numvots = 0;
 	}
-	
-	//sem_post(SEMAFOR);
+	printf("Partits inicialitzats a %d\n",addr->partits[0].numvots);
+	sem_post(&SEMAFOR);
 	
 }
 
 int add_party(const char id[]){
+	bool ok = true;
+	bool intable = false;
 	sem_wait(&SEMAFOR);	
 	for(int i=0;i<NPARTITS;i++){
 		if(!strcmp(addr->partits[i].id,id)){
 			if(addr->partits[i].enTaula){
-				return ERR;
+				ok=false;
+				break;
 			}
 			else{
+				intable=true;
 				addr->partits[i].enTaula = true;
-				return OK;
+				break;
 			}
 		}
 	}
+
+	if(!ok){
+		sem_post(&SEMAFOR);
+		return ERR;
+	}
+
+	if(intable){
+		sem_post(&SEMAFOR);
+		return OK;
+	}
+		
 
 	for(int i=0;i<NPARTITS;i++){
 		if(!addr->partits[i].enTaula){
 				addr->partits[i].enTaula = true;
 				*(addr->partits[i].id)=id[0];
-				return OK;
+				break;
 		}
 
 	}
 	sem_post(&SEMAFOR);
+	if(!ok)
+		return ERR;
+	else
+		return OK;
+	
+	
 	
 	
 }
@@ -127,9 +146,13 @@ void traverse(travapp *const f, void *const data){
 
 int bind_shared_table(void){
 	fd=shm_open("memcompartida",O_RDWR,0);
+	if(fd == ERR){	
+		fprintf(stderr,"Error en fer bind\n");
+		return ERR;
+	}
 	addr=mmap(NULL,sizeof(taula_partits),PROT_READ|PROT_WRITE,MAP_SHARED,fd,(off_t)0); //Mapejem a memòria
 	if(addr==MAP_FAILED){
-		remove_shared_table();
+		fprintf(stderr,"Error en fer mmap\n");
 		return ERR;
 	}
 	printf("ADDR: %d\n",addr);
