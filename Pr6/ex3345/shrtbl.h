@@ -16,9 +16,10 @@ bool enTaula;
 typedef struct {
 partit_individual partits[NPARTITS];
 sem_t *semafor;
-} taula_partits;
+} taula_partits,*apuntador_llista;
 
-typedef taula_partits(*apuntador_llista);
+//typedef (taula_partits*)apuntador_llista;
+//typedef void * apuntador_llista;
 typedef void travapp(const char *const id, int votes, void *const data);
 
 int create_shared_table(void);
