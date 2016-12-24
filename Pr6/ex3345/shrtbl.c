@@ -20,7 +20,6 @@ static int fd;
 void init_table(void){
 	sem_init(&SEMAFOR,1,1);
 	sem_wait(&SEMAFOR);
-	//Zona conflictiva
 	for(int i=0;i<NPARTITS;i++){
 		addr->partits[i].enTaula = false;
 		addr->partits[i].numvots = 0;
@@ -31,11 +30,13 @@ void init_table(void){
 
 int add_party(const char id[]){
 	bool ok = false;
+	bool isin = false;
 	sem_wait(&SEMAFOR);	
 	for(int i=0;i<NPARTITS;i++){
 		if(!strcmp(addr->partits[i].id,id)){
+			isin=true;
 			if(addr->partits[i].enTaula){
-				ok=true;
+				ok=false;
 				break;
 			}
 			else{
@@ -49,6 +50,12 @@ int add_party(const char id[]){
 	if(ok){
 		sem_post(&SEMAFOR);
 		return OK;
+	}
+	else{
+		if(isin){
+			sem_post(&SEMAFOR);
+			return ERR;
+		}
 	}
 
 
@@ -151,7 +158,6 @@ int bind_shared_table(void){
 		fprintf(stderr,"Error en fer mmap\n");
 		return ERR;
 	}
-	printf("ADDR: %d\n",addr);
 	close(fd);
 	return OK;
 }
@@ -168,7 +174,6 @@ int create_shared_table(void){
 		remove_shared_table();
 		return ERR;
 	}
-	printf("fd: %d\n",fd);
 	close(fd);	
 	return OK;
 }

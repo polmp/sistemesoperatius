@@ -11,40 +11,52 @@
 static volatile bool is_end = false;
 static FILE * pipegnu;
 
+void dadesgrafic(const char *const id, int votes, void *const data){
+	fprintf(pipegnu,"\"%s\" %d\n",id,votes);
+	fflush(pipegnu);
+}
+
 void controlc(int sig){ 
 	is_end = true;
 }
 
 void grafic_init(void){
-	
 	fprintf(pipegnu,"clear\n");
+	fflush(pipegnu);
 	fprintf(pipegnu,"reset\n");
+	fflush(pipegnu);
 	fprintf(pipegnu,"unset key\n");
 	fflush(pipegnu);
 	fprintf(pipegnu,"set xtics rotate out\n");
+	fflush(pipegnu);
 	fprintf(pipegnu,"set style data histogram\n");
+	fflush(pipegnu);
 	fprintf(pipegnu,"set style fill solid border\n");
+	fflush(pipegnu);
 	fprintf(pipegnu,"set boxwidth 0.95 relative\n");
+	fflush(pipegnu);
 	fprintf(pipegnu,"set style histogram rowstacked\n");
+	fflush(pipegnu);
 	fprintf(pipegnu,"set offsets graph -0.1,-0.5, 0, 0\n");
+	fflush(pipegnu);
 	fprintf(pipegnu,"set yrange [0:100]\n");
+	fflush(pipegnu);
 	fprintf(pipegnu,"set xlabel \"Agrupacions\"\n");
+	fflush(pipegnu);
 	fprintf(pipegnu,"set ylabel \"Vots (percentatge)\"\n");
-}
-
-void dadesgrafic(const char *const id, int votes, void *const data){
-	fprintf(stderr,"Parametres: %s %d\n",id,votes);
-	fprintf(pipegnu,"\"%s\" %d\n",id,votes);
+	fflush(pipegnu);
+	fprintf(pipegnu,"plot '-' using 2:xtic(1) lt rgb \"#66FF66\"\n");
 	fflush(pipegnu);
 }
 
 void update(void){
-fprintf(pipegnu,"replot\n");
-fflush(pipegnu);
-if (get_nparties() > 0)
-	traverse(dadesgrafic,NULL);
-fprintf(pipegnu,"e\n");
-fflush(pipegnu);
+	fprintf(pipegnu,"plot '-' using 2:xtic(1) lt rgb \"#66FF66\"\n");
+	fflush(pipegnu);
+	if (get_nparties() > 0){
+		traverse(dadesgrafic,NULL);
+	}
+	fprintf(pipegnu,"e\n");
+	fflush(pipegnu);
 }
 
 int main(void){
@@ -52,7 +64,6 @@ int main(void){
 	pipegnu = popen ("gnuplot","w");
 
 	if(create_shared_table() == ERR){ //Iniciem la memoria compartida
-		printf("RIP\n"); 
 		exit(EXIT_FAILURE);
 	}
 	else{
@@ -60,7 +71,6 @@ int main(void){
 	}
 
 	if(bind_shared_table() == ERR){
-		printf("RIP BIND\n");
 		remove_shared_table();
 		exit(EXIT_FAILURE);
 	}
@@ -72,25 +82,14 @@ int main(void){
 	init_table();
 	while(!get_nparties()) sleep(4);
 	grafic_init();
-	fprintf(pipegnu,"plot '-' using 2:xticlabel(1) lt rgb \"#66FF66\"\n");
-	fflush(pipegnu);
-	traverse(dadesgrafic,NULL);
-  	fprintf(pipegnu,"e\n");
-	fflush(pipegnu);
-	
-	while(!is_end){
-		sleep(4);
-		update();
-		fprintf(pipegnu,"%s\n","replot");
-		fflush(pipegnu);
-	}
-	printf("Borrada memoria compartida\n");
-	remove_shared_table();
-	
-	pclose(pipegnu);
 
-		
-	
+	while(!is_end){
+		update();
+		sleep(4);
+	}
+
+	remove_shared_table();
+	pclose(pipegnu);
 	return 0;
 }
 
