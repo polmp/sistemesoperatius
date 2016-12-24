@@ -33,11 +33,14 @@ void grafic_init(void){
 }
 
 void dadesgrafic(const char *const id, int votes, void *const data){
+	fprintf(stderr,"Parametres: %s %d\n",id,votes);
 	fprintf(pipegnu,"\"%s\" %d\n",id,votes);
 	fflush(pipegnu);
 }
 
 void update(void){
+fprintf(pipegnu,"replot\n");
+fflush(pipegnu);
 if (get_nparties() > 0)
 	traverse(dadesgrafic,NULL);
 fprintf(pipegnu,"e\n");
@@ -73,7 +76,7 @@ int main(void){
 	fflush(pipegnu);
 	traverse(dadesgrafic,NULL);
   	fprintf(pipegnu,"e\n");
-  	
+	fflush(pipegnu);
 	
 	while(!is_end){
 		sleep(4);

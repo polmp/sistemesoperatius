@@ -25,44 +25,38 @@ void init_table(void){
 		addr->partits[i].enTaula = false;
 		addr->partits[i].numvots = 0;
 	}
-	printf("Partits inicialitzats a %d\n",addr->partits[0].numvots);
 	sem_post(&SEMAFOR);
 	
 }
 
 int add_party(const char id[]){
-	bool ok = true;
-	bool intable = false;
+	bool ok = false;
 	sem_wait(&SEMAFOR);	
 	for(int i=0;i<NPARTITS;i++){
 		if(!strcmp(addr->partits[i].id,id)){
 			if(addr->partits[i].enTaula){
-				ok=false;
+				ok=true;
 				break;
 			}
 			else{
-				intable=true;
+				ok=true;
 				addr->partits[i].enTaula = true;
 				break;
 			}
 		}
 	}
 
-	if(!ok){
-		sem_post(&SEMAFOR);
-		return ERR;
-	}
-
-	if(intable){
+	if(ok){
 		sem_post(&SEMAFOR);
 		return OK;
 	}
-		
+
 
 	for(int i=0;i<NPARTITS;i++){
 		if(!addr->partits[i].enTaula){
 				addr->partits[i].enTaula = true;
-				*(addr->partits[i].id)=&(id[0]);
+				ok=true;
+				strcpy(addr->partits[i].id, id);
 				break;
 		}
 
@@ -138,8 +132,9 @@ int get_nparties(void){
 void traverse(travapp *const f, void *const data){
 	sem_wait(&SEMAFOR);
 	for(int i=0;i<NPARTITS;i++){
-		if(addr->partits[i].enTaula)
+		if(addr->partits[i].enTaula){
 			f(addr->partits[i].id,addr->partits[i].numvots,data);
+		}
 	}
 	sem_post(&SEMAFOR);
 }

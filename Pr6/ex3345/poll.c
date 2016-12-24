@@ -10,6 +10,9 @@ int main(int argc,char *argv[]){
 		if(!strcmp("new",argv[1])){
 			if(add_party(argv[2]) == ERR)
 				printf("Ja existeix!\n");
+			else{
+				printf("Afegit %s\n",argv[2]);
+			}
 				
 		}
 		else if(!strcmp("add",argv[1])){
