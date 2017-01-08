@@ -6,7 +6,7 @@
 
 */
 int main(int argc,char *argv[]){
-	if(bind_shared_table() != ERR){
+	if(bind_shared_table() != ERR && argc > 1){
 		if(!strcmp("new",argv[1]) && argc > 2){
 			if(add_party(argv[2]) == ERR)
 				printf("Ja existeix!\n");
@@ -27,7 +27,7 @@ int main(int argc,char *argv[]){
 	}
 
 	else{
-		fprintf(stderr,"BIND ERROR\n");
+		fprintf(stderr,"BIND ERROR or not enough parameters specified\n");
 
 	}
 	
