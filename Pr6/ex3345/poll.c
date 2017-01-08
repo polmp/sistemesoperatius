@@ -7,7 +7,7 @@
 */
 int main(int argc,char *argv[]){
 	if(bind_shared_table() != ERR){
-		if(!strcmp("new",argv[1])){
+		if(!strcmp("new",argv[1]) && argc > 2){
 			if(add_party(argv[2]) == ERR)
 				printf("Ja existeix!\n");
 			else
@@ -15,7 +15,8 @@ int main(int argc,char *argv[]){
 			
 				
 		}
-		else if(!strcmp("add",argv[1])){
+		else if(!strcmp("add",argv[1]) && argc > 3){
+			
 			if(!atoi(argv[3])){
 				printf("Error en el nombre de vots!\n");
 			}
